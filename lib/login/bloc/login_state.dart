@@ -5,7 +5,7 @@ class LoginState extends Equatable {
   const LoginState({
     this.status = FormzStatus.pure,
     this.username = const Username.pure(),
-    this.password = const Passeord.pure(),
+    this.password = const Password.pure(),
   });
 
   final FormzStatus status;

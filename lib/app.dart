@@ -8,7 +8,10 @@ import 'package:flutter_login/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_login/home/home';
 import 'package:flutter_login/login/login.dart';
 import 'package:flutter_login/splash/splash.dart';
+import 'package:flutter_login/splash/view/splash_page.dart';
 import 'package:user_repository/user_repository.dart';
+
+import 'login/view/login_page.dart';
 
 class App extends StatelessWidget {
   const App({

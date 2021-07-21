@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_login/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_login/login/login.dart';
+import 'package:flutter_login/login/models/models.dart';
 import 'package:formz/formz.dart';
 
 part 'login_event.dart';
@@ -30,7 +31,41 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  LoginState _mapUsernameChangedToState(
+      LoginUsernameChanged event,
+      LoginState state,
+      ) {
+    final username = Username.dirty(event.username);
+    return state.copyWith(
+      username: username,
+      status: Formz.validate([state.password, username]),
+    );
+  }
 
+  LoginState _mapPasswordChangedToState(
+      LoginPasswordChanged event,
+      LoginState state,
+      ) {
+    final password = Password.dirty(event.password);
+    return state.copyWith(
+      password: password,
+      status: Formz.validate([password, state.username]),
+    );
+  }
 
-
+  Stream<LoginState> _mapLoginSubmittedToState(
+      LoginSubmitted event,
+      LoginState state,
+      ) async* {
+    if (state.status.isValidated) {
+      yield state.copyWith(status: FormzStatus.submissionInProgress);
+      try {
+        await _authenticationRepository.logIn(username: state.username.value, password: state.password.value,
+        );
+        yield state.copyWith(status: FormzStatus.submissionFailure);
+      } on Exception catch(_) {
+        yield state.copyWith(status: FormzStatus.submissionFailure);
+      }
+    }
+  }
 }
